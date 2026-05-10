@@ -24,6 +24,9 @@ import { ClaudeSettingsCard } from './claude-settings-card'
 import { GeminiSettingsCard } from './gemini-settings-card'
 import { GlobalSettingsCard } from './global-settings-card'
 import { GrokSettingsCard } from './grok-settings-card'
+import type { TFunction } from 'i18next'
+import { useAuthStore } from '@/stores/auth-store'
+import { ROLE } from '@/lib/roles'
 
 function formatJsonForEditor(value: string, fallback: string) {
   const raw = (value ?? '').toString().trim()
@@ -171,5 +174,14 @@ const modelsRegistry = createSectionRegistry<ModelSectionId, ModelSettings>({
 
 export const MODELS_SECTION_IDS = modelsRegistry.sectionIds
 export const MODELS_DEFAULT_SECTION = modelsRegistry.defaultSection
-export const getModelsSectionNavItems = modelsRegistry.getSectionNavItems
+const baseGetModelsSectionNavItems = modelsRegistry.getSectionNavItems
+export const getModelsSectionNavItems = (t: TFunction) => {
+  const userRole = useAuthStore.getState().auth.user?.role ?? 0
+  const isSuperAdmin = userRole >= ROLE.SUPER_ADMIN
+  const items = baseGetModelsSectionNavItems(t)
+  if (isSuperAdmin) return items
+  return items.filter(
+    (item) => !item.url.endsWith('/model-deployment')
+  )
+}
 export const getModelsSectionContent = modelsRegistry.getSectionContent

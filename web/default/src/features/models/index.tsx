@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { getRouteApi, useNavigate } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
@@ -24,6 +24,8 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SectionPageLayout } from '@/components/layout'
+import { useAuthStore } from '@/stores/auth-store'
+import { ROLE } from '@/lib/roles'
 import { listDeployments } from './api'
 import { DeploymentAccessGuard } from './components/deployment-access-guard'
 import { DeploymentsTable } from './components/deployments-table'
@@ -62,6 +64,15 @@ function ModelsContent() {
   const queryClient = useQueryClient()
   const { tabCategory, setTabCategory } = useModels()
   const params = route.useParams()
+  const userRole = useAuthStore((state) => state.auth.user?.role)
+  const isSuperAdmin = !!userRole && userRole >= ROLE.SUPER_ADMIN
+  const visibleSectionIds = useMemo(
+    () =>
+      MODELS_SECTION_IDS.filter((id) =>
+        id === 'deployments' ? isSuperAdmin : true
+      ),
+    [isSuperAdmin]
+  )
   const activeSection = (params.section ??
     MODELS_DEFAULT_SECTION) as ModelsSectionId
 
@@ -84,7 +95,7 @@ function ModelsContent() {
     connectionError,
     testConnection,
     refresh: refreshDeploymentSettings,
-  } = useModelDeploymentSettings()
+  } = useModelDeploymentSettings({ enabled: isSuperAdmin })
 
   // Ensure settings are fresh when switching to deployments section
   useEffect(() => {
@@ -143,7 +154,7 @@ function ModelsContent() {
           <div className='space-y-4'>
             <Tabs value={activeSection} onValueChange={handleSectionChange}>
               <TabsList className='h-auto max-w-full flex-wrap justify-start'>
-                {MODELS_SECTION_IDS.map((section) => (
+                {visibleSectionIds.map((section) => (
                   <TabsTrigger key={section} value={section}>
                     {t(SECTION_META[section].titleKey)}
                   </TabsTrigger>

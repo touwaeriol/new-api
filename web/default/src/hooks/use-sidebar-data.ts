@@ -37,9 +37,51 @@ import {
 import { useTranslation } from 'react-i18next'
 import { WORKSPACE_IDS } from '@/components/layout/lib/workspace-registry'
 import { type SidebarData } from '@/components/layout/types'
+import { useAuthStore } from '@/stores/auth-store'
+import { ROLE } from '@/lib/roles'
 
 export function useSidebarData(): SidebarData {
   const { t } = useTranslation()
+  const userRole = useAuthStore((state) => state.auth.user?.role)
+  const isSuperAdmin = !!userRole && userRole >= ROLE.SUPER_ADMIN
+
+  const adminItems = [
+    {
+      title: t('Channels'),
+      url: '/channels',
+      icon: Radio,
+    },
+    {
+      title: t('Models'),
+      url: '/models/metadata',
+      icon: Box,
+    },
+    ...(isSuperAdmin
+      ? [
+          {
+            title: t('Users'),
+            url: '/users',
+            icon: Users,
+          },
+          {
+            title: t('Redemption Codes'),
+            url: '/redemption-codes',
+            icon: Ticket,
+          },
+          {
+            title: t('Subscription Management'),
+            url: '/subscriptions',
+            icon: CreditCard,
+          },
+        ]
+      : []),
+    {
+      title: t('System Settings'),
+      url: '/system-settings/site',
+      activeUrls: ['/system-settings'],
+      icon: Settings,
+    },
+  ]
 
   return {
     workspaces: [
@@ -119,39 +161,7 @@ export function useSidebarData(): SidebarData {
       {
         id: 'admin',
         title: t('Admin'),
-        items: [
-          {
-            title: t('Channels'),
-            url: '/channels',
-            icon: Radio,
-          },
-          {
-            title: t('Models'),
-            url: '/models/metadata',
-            icon: Box,
-          },
-          {
-            title: t('Users'),
-            url: '/users',
-            icon: Users,
-          },
-          {
-            title: t('Redemption Codes'),
-            url: '/redemption-codes',
-            icon: Ticket,
-          },
-          {
-            title: t('Subscription Management'),
-            url: '/subscriptions',
-            icon: CreditCard,
-          },
-          {
-            title: t('System Settings'),
-            url: '/system-settings/site',
-            activeUrls: ['/system-settings'],
-            icon: Settings,
-          },
-        ],
+        items: adminItems,
       },
     ],
   }

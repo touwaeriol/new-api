@@ -22,6 +22,8 @@ import {
   MODELS_DEFAULT_SECTION,
   MODELS_SECTION_IDS,
 } from '@/features/system-settings/models/section-registry.tsx'
+import { useAuthStore } from '@/stores/auth-store'
+import { ROLE } from '@/lib/roles'
 
 export const Route = createFileRoute(
   '/_authenticated/system-settings/models/$section'
@@ -29,6 +31,18 @@ export const Route = createFileRoute(
   beforeLoad: ({ params }) => {
     const validSections = MODELS_SECTION_IDS as unknown as string[]
     if (!validSections.includes(params.section)) {
+      throw redirect({
+        to: '/system-settings/models/$section',
+        params: { section: MODELS_DEFAULT_SECTION },
+      })
+    }
+
+    // 模型部署仅 SUPER_ADMIN 可访问
+    const userRole = useAuthStore.getState().auth.user?.role ?? 0
+    if (
+      params.section === 'model-deployment' &&
+      userRole < ROLE.SUPER_ADMIN
+    ) {
       throw redirect({
         to: '/system-settings/models/$section',
         params: { section: MODELS_DEFAULT_SECTION },

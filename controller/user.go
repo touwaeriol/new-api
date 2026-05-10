@@ -543,6 +543,9 @@ func GetUserModels(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var updatedUser model.User
 	err := json.NewDecoder(c.Request.Body).Decode(&updatedUser)
 	if err != nil || updatedUser.Id == 0 {
@@ -586,6 +589,9 @@ func UpdateUser(c *gin.Context) {
 }
 
 func AdminClearUserBinding(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		common.ApiErrorI18n(c, i18n.MsgInvalidParams)
@@ -756,6 +762,9 @@ func checkUpdatePassword(originalPassword string, newPassword string, userId int
 }
 
 func DeleteUser(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		common.ApiError(c, err)
@@ -803,6 +812,9 @@ func DeleteSelf(c *gin.Context) {
 }
 
 func CreateUser(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var user model.User
 	err := json.NewDecoder(c.Request.Body).Decode(&user)
 	user.Username = strings.TrimSpace(user.Username)
@@ -850,6 +862,9 @@ type ManageRequest struct {
 
 // ManageUser Only admin user can do this
 func ManageUser(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var req ManageRequest
 	err := json.NewDecoder(c.Request.Body).Decode(&req)
 

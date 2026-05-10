@@ -51,8 +51,9 @@ export function clearConnectionCache() {
 
 type LoadingPhase = 'idle' | 'settings' | 'connection' | 'done'
 
-export function useModelDeploymentSettings() {
-  const [loading, setLoading] = useState(true)
+export function useModelDeploymentSettings(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true
+  const [loading, setLoading] = useState(enabled)
   const [loadingPhase, setLoadingPhase] = useState<LoadingPhase>('settings')
   const [settings, setSettings] = useState<Record<string, unknown>>({
     'model_deployment.ionet.enabled': false,
@@ -66,6 +67,11 @@ export function useModelDeploymentSettings() {
 
   // Parallel fetch: settings + connection test (when enabled)
   const fetchAll = useCallback(async (useCache = true) => {
+    if (!enabled) {
+      setLoading(false)
+      setLoadingPhase('done')
+      return
+    }
     setLoading(true)
     setLoadingPhase('settings')
 
@@ -124,20 +130,22 @@ export function useModelDeploymentSettings() {
       setLoadingPhase('done')
       setLoading(false)
     }
-  }, [])
+  }, [enabled])
 
   // Initial load
   useEffect(() => {
+    if (!enabled) return
     if (initialLoadRef.current) {
       initialLoadRef.current = false
       fetchAll(true)
     }
-  }, [fetchAll])
+  }, [fetchAll, enabled])
 
   const isIoNetEnabled = Boolean(settings['model_deployment.ionet.enabled'])
 
   // Manual retry (skip cache)
   const testConnection = useCallback(async () => {
+    if (!enabled) return
     clearConnectionCache()
     setConnectionState({ loading: true, ok: null, error: null })
     setLoadingPhase('connection')
@@ -160,23 +168,25 @@ export function useModelDeploymentSettings() {
     } finally {
       setLoadingPhase('done')
     }
-  }, [])
+  }, [enabled])
 
   // Refresh all (skip cache)
   const refresh = useCallback(() => {
+    if (!enabled) return
     clearConnectionCache()
     return fetchAll(false)
-  }, [fetchAll])
+  }, [fetchAll, enabled])
 
   // Refresh on window focus (useful after saving settings in another page)
   useEffect(() => {
+    if (!enabled) return
     const handler = () => {
       // Use cache on focus to avoid unnecessary requests
       fetchAll(true)
     }
     window.addEventListener('focus', handler)
     return () => window.removeEventListener('focus', handler)
-  }, [fetchAll])
+  }, [fetchAll, enabled])
 
   return {
     loading,

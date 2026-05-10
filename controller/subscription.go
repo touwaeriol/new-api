@@ -89,6 +89,9 @@ func UpdateSubscriptionPreference(c *gin.Context) {
 // ---- Admin APIs ----
 
 func AdminListSubscriptionPlans(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var plans []model.SubscriptionPlan
 	if err := model.DB.Order("sort_order desc, id desc").Find(&plans).Error; err != nil {
 		common.ApiError(c, err)
@@ -108,6 +111,9 @@ type AdminUpsertSubscriptionPlanRequest struct {
 }
 
 func AdminCreateSubscriptionPlan(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var req AdminUpsertSubscriptionPlanRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		common.ApiErrorMsg(c, "参数错误")
@@ -166,6 +172,9 @@ func AdminCreateSubscriptionPlan(c *gin.Context) {
 }
 
 func AdminUpdateSubscriptionPlan(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	id, _ := strconv.Atoi(c.Param("id"))
 	if id <= 0 {
 		common.ApiErrorMsg(c, "无效的ID")
@@ -259,6 +268,9 @@ type AdminUpdateSubscriptionPlanStatusRequest struct {
 }
 
 func AdminUpdateSubscriptionPlanStatus(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	id, _ := strconv.Atoi(c.Param("id"))
 	if id <= 0 {
 		common.ApiErrorMsg(c, "无效的ID")
@@ -283,6 +295,9 @@ type AdminBindSubscriptionRequest struct {
 }
 
 func AdminBindSubscription(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var req AdminBindSubscriptionRequest
 	if err := c.ShouldBindJSON(&req); err != nil || req.UserId <= 0 || req.PlanId <= 0 {
 		common.ApiErrorMsg(c, "参数错误")
@@ -303,6 +318,9 @@ func AdminBindSubscription(c *gin.Context) {
 // ---- Admin: user subscription management ----
 
 func AdminListUserSubscriptions(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	userId, _ := strconv.Atoi(c.Param("id"))
 	if userId <= 0 {
 		common.ApiErrorMsg(c, "无效的用户ID")
@@ -322,6 +340,9 @@ type AdminCreateUserSubscriptionRequest struct {
 
 // AdminCreateUserSubscription creates a new user subscription from a plan (no payment).
 func AdminCreateUserSubscription(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	userId, _ := strconv.Atoi(c.Param("id"))
 	if userId <= 0 {
 		common.ApiErrorMsg(c, "无效的用户ID")
@@ -346,6 +367,9 @@ func AdminCreateUserSubscription(c *gin.Context) {
 
 // AdminInvalidateUserSubscription cancels a user subscription immediately.
 func AdminInvalidateUserSubscription(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	subId, _ := strconv.Atoi(c.Param("id"))
 	if subId <= 0 {
 		common.ApiErrorMsg(c, "无效的订阅ID")
@@ -365,6 +389,9 @@ func AdminInvalidateUserSubscription(c *gin.Context) {
 
 // AdminDeleteUserSubscription hard-deletes a user subscription.
 func AdminDeleteUserSubscription(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	subId, _ := strconv.Atoi(c.Param("id"))
 	if subId <= 0 {
 		common.ApiErrorMsg(c, "无效的订阅ID")

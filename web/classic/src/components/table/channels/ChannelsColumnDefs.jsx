@@ -38,6 +38,7 @@ import {
   showSuccess,
   showError,
   showInfo,
+  isRoot,
 } from '../../../helpers';
 import {
   CHANNEL_OPTIONS,
@@ -101,12 +102,17 @@ const renderType = (type, record = {}, t) => {
 
   const handleNavigate = (event) => {
     event?.stopPropagation?.();
+    if (!isRoot()) {
+      return;
+    }
     if (!ionetMeta?.deployment_id) {
       return;
     }
     const targetUrl = `/console/deployment?deployment_id=${ionetMeta.deployment_id}`;
     window.open(targetUrl, '_blank', 'noopener');
   };
+
+  const rootUser = isRoot();
 
   return (
     <Space spacing={6}>
@@ -129,8 +135,8 @@ const renderType = (type, record = {}, t) => {
           <Tag
             color='purple'
             type='light'
-            className='cursor-pointer'
-            onClick={handleNavigate}
+            className={rootUser ? 'cursor-pointer' : undefined}
+            onClick={rootUser ? handleNavigate : undefined}
           >
             IO.NET
           </Tag>

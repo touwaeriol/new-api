@@ -154,35 +154,35 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         className: isAdmin() ? '' : 'tableHiddle',
       },
       {
-        text: t('订阅管理'),
-        itemKey: 'subscription',
-        to: '/subscription',
-        className: isAdmin() ? '' : 'tableHiddle',
-      },
-      {
         text: t('模型管理'),
         itemKey: 'models',
         to: '/console/models',
         className: isAdmin() ? '' : 'tableHiddle',
       },
-      {
-        text: t('模型部署'),
-        itemKey: 'deployment',
-        to: '/deployment',
-        className: isAdmin() ? '' : 'tableHiddle',
-      },
-      {
-        text: t('兑换码管理'),
-        itemKey: 'redemption',
-        to: '/redemption',
-        className: isAdmin() ? '' : 'tableHiddle',
-      },
-      {
-        text: t('用户管理'),
-        itemKey: 'user',
-        to: '/user',
-        className: isAdmin() ? '' : 'tableHiddle',
-      },
+      ...(isRoot()
+        ? [
+            {
+              text: t('订阅管理'),
+              itemKey: 'subscription',
+              to: '/subscription',
+            },
+            {
+              text: t('模型部署'),
+              itemKey: 'deployment',
+              to: '/deployment',
+            },
+            {
+              text: t('兑换码管理'),
+              itemKey: 'redemption',
+              to: '/redemption',
+            },
+            {
+              text: t('用户管理'),
+              itemKey: 'user',
+              to: '/user',
+            },
+          ]
+        : []),
       {
         text: t('系统设置'),
         itemKey: 'setting',

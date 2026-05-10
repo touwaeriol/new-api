@@ -59,6 +59,9 @@ func GetRedemption(c *gin.Context) {
 }
 
 func AddRedemption(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	redemption := model.Redemption{}
 	err := c.ShouldBindJSON(&redemption)
 	if err != nil {
@@ -113,6 +116,9 @@ func AddRedemption(c *gin.Context) {
 }
 
 func DeleteRedemption(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	id, _ := strconv.Atoi(c.Param("id"))
 	err := model.DeleteRedemptionById(id)
 	if err != nil {
@@ -127,6 +133,9 @@ func DeleteRedemption(c *gin.Context) {
 }
 
 func UpdateRedemption(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	statusOnly := c.Query("status_only")
 	redemption := model.Redemption{}
 	err := c.ShouldBindJSON(&redemption)
@@ -166,6 +175,9 @@ func UpdateRedemption(c *gin.Context) {
 }
 
 func DeleteInvalidRedemption(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	rows, err := model.DeleteInvalidRedemptions()
 	if err != nil {
 		common.ApiError(c, err)

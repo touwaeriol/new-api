@@ -343,6 +343,9 @@ func GetDeployment(c *gin.Context) {
 }
 
 func UpdateDeploymentName(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	client, ok := getIoEnterpriseClient(c)
 	if !ok {
 		return
@@ -398,6 +401,9 @@ func UpdateDeploymentName(c *gin.Context) {
 }
 
 func UpdateDeployment(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	client, ok := getIoEnterpriseClient(c)
 	if !ok {
 		return
@@ -428,6 +434,9 @@ func UpdateDeployment(c *gin.Context) {
 }
 
 func ExtendDeployment(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	client, ok := getIoEnterpriseClient(c)
 	if !ok {
 		return
@@ -467,6 +476,9 @@ func ExtendDeployment(c *gin.Context) {
 }
 
 func DeleteDeployment(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	client, ok := getIoEnterpriseClient(c)
 	if !ok {
 		return
@@ -492,6 +504,9 @@ func DeleteDeployment(c *gin.Context) {
 }
 
 func CreateDeployment(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	client, ok := getIoEnterpriseClient(c)
 	if !ok {
 		return

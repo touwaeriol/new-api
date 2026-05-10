@@ -485,6 +485,9 @@ type AdminCompleteTopupRequest struct {
 
 // AdminCompleteTopUp 管理员补单接口
 func AdminCompleteTopUp(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var req AdminCompleteTopupRequest
 	if err := c.ShouldBindJSON(&req); err != nil || req.TradeNo == "" {
 		common.ApiErrorMsg(c, "参数错误")

@@ -25,6 +25,7 @@ import {
   showInfo,
   showSuccess,
   verifyJSON,
+  isRoot,
 } from '../../../../helpers';
 import { useIsMobile } from '../../../../hooks/common/useIsMobile';
 import { CHANNEL_OPTIONS, MODEL_FETCHABLE_CHANNEL_TYPES } from '../../../../constants';
@@ -405,6 +406,9 @@ const EditChannelModal = (props) => {
   }, [isEdit]);
 
   const handleOpenIonetDeployment = () => {
+    if (!isRoot()) {
+      return;
+    }
     if (!ionetMetadata?.deployment_id) {
       return;
     }
@@ -2597,7 +2601,7 @@ const EditChannelModal = (props) => {
                         )}
                       >
                         <Space>
-                          {ionetMetadata?.deployment_id && (
+                          {ionetMetadata?.deployment_id && isRoot() && (
                             <Button
                               size='small'
                               theme='light'

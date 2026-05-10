@@ -56,6 +56,14 @@ export const Route = createFileRoute('/_authenticated/models/$section')({
         params: { section: MODELS_DEFAULT_SECTION },
       })
     }
+
+    // 模型部署仅 SUPER_ADMIN 可访问
+    if (params.section === 'deployments' && auth.user.role < ROLE.SUPER_ADMIN) {
+      throw redirect({
+        to: '/models/$section',
+        params: { section: MODELS_DEFAULT_SECTION },
+      })
+    }
   },
   validateSearch: modelsSearchSchema,
   component: Models,

@@ -21,7 +21,7 @@ import React, { lazy, Suspense, useContext, useMemo } from 'react';
 import { Route, Routes, useLocation, useParams } from 'react-router-dom';
 import Loading from './components/common/ui/Loading';
 import User from './pages/User';
-import { AuthRedirect, PrivateRoute, AdminRoute } from './helpers';
+import { AuthRedirect, PrivateRoute, AdminRoute, RootRoute } from './helpers';
 import RegisterForm from './components/auth/RegisterForm';
 import LoginForm from './components/auth/LoginForm';
 import NotFound from './pages/NotFound';
@@ -118,17 +118,17 @@ function App() {
         <Route
           path='/console/deployment'
           element={
-            <AdminRoute>
+            <RootRoute>
               <ModelDeploymentPage />
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route
           path='/console/subscription'
           element={
-            <AdminRoute>
+            <RootRoute>
               <Subscription />
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route
@@ -158,17 +158,17 @@ function App() {
         <Route
           path='/console/redemption'
           element={
-            <AdminRoute>
+            <RootRoute>
               <Redemption />
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route
           path='/console/user'
           element={
-            <AdminRoute>
+            <RootRoute>
               <User />
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route
