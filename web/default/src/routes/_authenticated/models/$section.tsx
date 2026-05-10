@@ -43,7 +43,7 @@ export const Route = createFileRoute('/_authenticated/models/$section')({
   beforeLoad: ({ params }) => {
     const { auth } = useAuthStore.getState()
 
-    if (!auth.user || auth.user.role < ROLE.ADMIN) {
+    if (!auth.user || auth.user.role < ROLE.SUPER_ADMIN) {
       throw redirect({
         to: '/403',
       })
@@ -51,14 +51,6 @@ export const Route = createFileRoute('/_authenticated/models/$section')({
 
     const validSections = MODELS_SECTION_IDS as unknown as string[]
     if (!validSections.includes(params.section)) {
-      throw redirect({
-        to: '/models/$section',
-        params: { section: MODELS_DEFAULT_SECTION },
-      })
-    }
-
-    // 模型部署仅 SUPER_ADMIN 可访问
-    if (params.section === 'deployments' && auth.user.role < ROLE.SUPER_ADMIN) {
       throw redirect({
         to: '/models/$section',
         params: { section: MODELS_DEFAULT_SECTION },

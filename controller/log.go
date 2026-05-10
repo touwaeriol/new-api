@@ -11,6 +11,9 @@ import (
 )
 
 func GetAllLogs(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	pageInfo := common.GetPageQuery(c)
 	logType, _ := strconv.Atoi(c.Query("type"))
 	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)
@@ -94,6 +97,9 @@ func GetLogByKey(c *gin.Context) {
 }
 
 func GetLogsStat(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	logType, _ := strconv.Atoi(c.Query("type"))
 	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)
 	endTimestamp, _ := strconv.ParseInt(c.Query("end_timestamp"), 10, 64)
@@ -149,6 +155,9 @@ func GetLogsSelfStat(c *gin.Context) {
 }
 
 func DeleteHistoryLogs(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	targetTimestamp, _ := strconv.ParseInt(c.Query("target_timestamp"), 10, 64)
 	if targetTimestamp == 0 {
 		c.JSON(http.StatusOK, gin.H{

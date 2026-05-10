@@ -79,6 +79,9 @@ func GetModelMeta(c *gin.Context) {
 
 // CreateModelMeta 新建模型
 func CreateModelMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var m model.Model
 	if err := c.ShouldBindJSON(&m); err != nil {
 		common.ApiError(c, err)
@@ -107,6 +110,9 @@ func CreateModelMeta(c *gin.Context) {
 
 // UpdateModelMeta 更新模型
 func UpdateModelMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	statusOnly := c.Query("status_only") == "true"
 
 	var m model.Model
@@ -146,6 +152,9 @@ func UpdateModelMeta(c *gin.Context) {
 
 // DeleteModelMeta 删除模型
 func DeleteModelMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {

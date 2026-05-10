@@ -20,7 +20,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { API, isAdmin, showError, timestamp2string } from '../../helpers';
+import { API, isRoot, showError, timestamp2string } from '../../helpers';
 import { getDefaultTime, getInitialTimestamp } from '../../helpers/dashboard';
 import { TIME_OPTIONS } from '../../constants/dashboard.constants';
 import { useIsMobile } from '../common/useIsMobile';
@@ -83,7 +83,8 @@ export const useDashboardData = (userState, userDispatch, statusState) => {
 
   // ========== 常量 ==========
   const now = new Date();
-  const isAdminUser = isAdmin();
+  // 业主策略：仅 SUPER_ADMIN 可看全局/跨用户视图，普通管理员（role=10）只看自己。
+  const isAdminUser = isRoot();
 
   // ========== Panel enable flags ==========
   const apiInfoEnabled = statusState?.status?.api_info_enabled ?? true;

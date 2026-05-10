@@ -153,14 +153,13 @@ const SiderBar = ({ onNavigate = () => {} }) => {
         to: '/channel',
         className: isAdmin() ? '' : 'tableHiddle',
       },
-      {
-        text: t('模型管理'),
-        itemKey: 'models',
-        to: '/console/models',
-        className: isAdmin() ? '' : 'tableHiddle',
-      },
       ...(isRoot()
         ? [
+            {
+              text: t('模型管理'),
+              itemKey: 'models',
+              to: '/console/models',
+            },
             {
               text: t('订阅管理'),
               itemKey: 'subscription',
@@ -181,14 +180,13 @@ const SiderBar = ({ onNavigate = () => {} }) => {
               itemKey: 'user',
               to: '/user',
             },
+            {
+              text: t('系统设置'),
+              itemKey: 'setting',
+              to: '/setting',
+            },
           ]
         : []),
-      {
-        text: t('系统设置'),
-        itemKey: 'setting',
-        to: '/setting',
-        className: isRoot() ? '' : 'tableHiddle',
-      },
     ];
 
     // 根据配置过滤项目

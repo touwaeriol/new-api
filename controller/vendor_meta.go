@@ -56,6 +56,9 @@ func GetVendorMeta(c *gin.Context) {
 
 // CreateVendorMeta 新建供应商
 func CreateVendorMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var v model.Vendor
 	if err := c.ShouldBindJSON(&v); err != nil {
 		common.ApiError(c, err)
@@ -83,6 +86,9 @@ func CreateVendorMeta(c *gin.Context) {
 
 // UpdateVendorMeta 更新供应商
 func UpdateVendorMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var v model.Vendor
 	if err := c.ShouldBindJSON(&v); err != nil {
 		common.ApiError(c, err)
@@ -110,6 +116,9 @@ func UpdateVendorMeta(c *gin.Context) {
 
 // DeleteVendorMeta 删除供应商
 func DeleteVendorMeta(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {

@@ -17,15 +17,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 /**
- * Hook for checking admin privileges
+ * Hook for checking "global / cross-user view" privileges.
+ * 业主策略：仅 SUPER_ADMIN 才能查看其它用户的日志/账单/任务等全局视图。
+ * 普通 admin（role=10）只能管理渠道，对个人视图与普通用户一致。
  */
 import { useAuthStore } from '@/stores/auth-store'
 import { ROLE } from '@/lib/roles'
 
 /**
- * Check if current user has admin privileges
+ * Check if current user can see global cross-user views (logs/billing/tasks).
+ * Note: 名为 useIsAdmin 是历史遗留语义，实际语义已收紧到 SUPER_ADMIN。
  */
 export function useIsAdmin(): boolean {
   const { user } = useAuthStore((state) => state.auth)
-  return (user?.role ?? 0) >= ROLE.ADMIN
+  return (user?.role ?? 0) >= ROLE.SUPER_ADMIN
 }

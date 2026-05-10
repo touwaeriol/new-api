@@ -51,13 +51,13 @@ export function useSidebarData(): SidebarData {
       url: '/channels',
       icon: Radio,
     },
-    {
-      title: t('Models'),
-      url: '/models/metadata',
-      icon: Box,
-    },
     ...(isSuperAdmin
       ? [
+          {
+            title: t('Models'),
+            url: '/models/metadata',
+            icon: Box,
+          },
           {
             title: t('Users'),
             url: '/users',
@@ -73,14 +73,14 @@ export function useSidebarData(): SidebarData {
             url: '/subscriptions',
             icon: CreditCard,
           },
+          {
+            title: t('System Settings'),
+            url: '/system-settings/site',
+            activeUrls: ['/system-settings'],
+            icon: Settings,
+          },
         ]
       : []),
-    {
-      title: t('System Settings'),
-      url: '/system-settings/site',
-      activeUrls: ['/system-settings'],
-      icon: Settings,
-    },
   ]
 
   return {

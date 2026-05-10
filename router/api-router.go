@@ -23,7 +23,7 @@ func SetApiRouter(router *gin.Engine) {
 		apiRouter.GET("/status", controller.GetStatus)
 		apiRouter.GET("/uptime/status", controller.GetUptimeKumaStatus)
 		apiRouter.GET("/models", middleware.UserAuth(), controller.DashboardListModels)
-		apiRouter.GET("/status/test", middleware.AdminAuth(), controller.TestStatus)
+		apiRouter.GET("/status/test", middleware.RootAuth(), controller.TestStatus)
 		apiRouter.GET("/notice", controller.GetNotice)
 		apiRouter.GET("/user-agreement", controller.GetUserAgreement)
 		apiRouter.GET("/privacy-policy", controller.GetPrivacyPolicy)
@@ -72,7 +72,7 @@ func SetApiRouter(router *gin.Engine) {
 			userRoute.GET("/logout", controller.Logout)
 			userRoute.POST("/epay/notify", controller.EpayNotify)
 			userRoute.GET("/epay/notify", controller.EpayNotify)
-			userRoute.GET("/groups", controller.GetUserGroups)
+			userRoute.GET("/groups", middleware.UserAuth(), controller.GetUserGroups)
 
 			selfRoute := userRoute.Group("/")
 			selfRoute.Use(middleware.UserAuth())
@@ -293,51 +293,54 @@ func SetApiRouter(router *gin.Engine) {
 			redemptionRoute.DELETE("/:id", controller.DeleteRedemption)
 		}
 		logRoute := apiRouter.Group("/log")
-		logRoute.GET("/", middleware.AdminAuth(), controller.GetAllLogs)
-		logRoute.DELETE("/", middleware.AdminAuth(), controller.DeleteHistoryLogs)
-		logRoute.GET("/stat", middleware.AdminAuth(), controller.GetLogsStat)
+		logRoute.GET("/", middleware.RootAuth(), controller.GetAllLogs)
+		logRoute.DELETE("/", middleware.RootAuth(), controller.DeleteHistoryLogs)
+		logRoute.GET("/stat", middleware.RootAuth(), controller.GetLogsStat)
 		logRoute.GET("/self/stat", middleware.UserAuth(), controller.GetLogsSelfStat)
-		logRoute.GET("/channel_affinity_usage_cache", middleware.AdminAuth(), controller.GetChannelAffinityUsageCacheStats)
-		logRoute.GET("/search", middleware.AdminAuth(), controller.SearchAllLogs)
+		logRoute.GET("/channel_affinity_usage_cache", middleware.RootAuth(), controller.GetChannelAffinityUsageCacheStats)
+		logRoute.GET("/search", middleware.RootAuth(), controller.SearchAllLogs)
 		logRoute.GET("/self", middleware.UserAuth(), controller.GetUserLogs)
 		logRoute.GET("/self/search", middleware.UserAuth(), middleware.SearchRateLimit(), controller.SearchUserLogs)
 
 		dataRoute := apiRouter.Group("/data")
-		dataRoute.GET("/", middleware.AdminAuth(), controller.GetAllQuotaDates)
-		dataRoute.GET("/users", middleware.AdminAuth(), controller.GetQuotaDatesByUser)
+		dataRoute.GET("/", middleware.RootAuth(), controller.GetAllQuotaDates)
+		dataRoute.GET("/users", middleware.RootAuth(), controller.GetQuotaDatesByUser)
 		dataRoute.GET("/self", middleware.UserAuth(), controller.GetUserQuotaDates)
 
 		logRoute.Use(middleware.CORS(), middleware.CriticalRateLimit())
 		{
 			logRoute.GET("/token", middleware.TokenAuthReadOnly(), controller.GetLogByKey)
 		}
+		// GET /api/group/ 是渠道编辑下拉的依赖，保留 AdminAuth（只读）
 		groupRoute := apiRouter.Group("/group")
 		groupRoute.Use(middleware.AdminAuth())
 		{
 			groupRoute.GET("/", controller.GetGroups)
 		}
 
+		// /api/prefill_group/ GET 是渠道编辑预填下拉的依赖，保留 AdminAuth（只读）
+		// 写操作必须 RootAuth + controller 内 requireRoot 二次校验
 		prefillGroupRoute := apiRouter.Group("/prefill_group")
 		prefillGroupRoute.Use(middleware.AdminAuth())
 		{
 			prefillGroupRoute.GET("/", controller.GetPrefillGroups)
-			prefillGroupRoute.POST("/", controller.CreatePrefillGroup)
-			prefillGroupRoute.PUT("/", controller.UpdatePrefillGroup)
-			prefillGroupRoute.DELETE("/:id", controller.DeletePrefillGroup)
+			prefillGroupRoute.POST("/", middleware.RootAuth(), controller.CreatePrefillGroup)
+			prefillGroupRoute.PUT("/", middleware.RootAuth(), controller.UpdatePrefillGroup)
+			prefillGroupRoute.DELETE("/:id", middleware.RootAuth(), controller.DeletePrefillGroup)
 		}
 
 		mjRoute := apiRouter.Group("/mj")
 		mjRoute.GET("/self", middleware.UserAuth(), controller.GetUserMidjourney)
-		mjRoute.GET("/", middleware.AdminAuth(), controller.GetAllMidjourney)
+		mjRoute.GET("/", middleware.RootAuth(), controller.GetAllMidjourney)
 
 		taskRoute := apiRouter.Group("/task")
 		{
 			taskRoute.GET("/self", middleware.UserAuth(), controller.GetUserTask)
-			taskRoute.GET("/", middleware.AdminAuth(), controller.GetAllTask)
+			taskRoute.GET("/", middleware.RootAuth(), controller.GetAllTask)
 		}
 
 		vendorRoute := apiRouter.Group("/vendors")
-		vendorRoute.Use(middleware.AdminAuth())
+		vendorRoute.Use(middleware.RootAuth())
 		{
 			vendorRoute.GET("/", controller.GetAllVendors)
 			vendorRoute.GET("/search", controller.SearchVendors)
@@ -348,7 +351,7 @@ func SetApiRouter(router *gin.Engine) {
 		}
 
 		modelsRoute := apiRouter.Group("/models")
-		modelsRoute.Use(middleware.AdminAuth())
+		modelsRoute.Use(middleware.RootAuth())
 		{
 			modelsRoute.GET("/sync_upstream/preview", controller.SyncUpstreamPreview)
 			modelsRoute.POST("/sync_upstream", controller.SyncUpstreamModels)

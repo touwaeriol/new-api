@@ -11,6 +11,9 @@ import (
 )
 
 func GetAllQuotaDates(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)
 	endTimestamp, _ := strconv.ParseInt(c.Query("end_timestamp"), 10, 64)
 	username := c.Query("username")
@@ -28,6 +31,9 @@ func GetAllQuotaDates(c *gin.Context) {
 }
 
 func GetQuotaDatesByUser(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)
 	endTimestamp, _ := strconv.ParseInt(c.Query("end_timestamp"), 10, 64)
 	dates, err := model.GetQuotaDataGroupByUser(startTimestamp, endTimestamp)

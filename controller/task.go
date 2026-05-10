@@ -20,6 +20,9 @@ func UpdateTaskBulk() {
 }
 
 func GetAllTask(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	pageInfo := common.GetPageQuery(c)
 
 	startTimestamp, _ := strconv.ParseInt(c.Query("start_timestamp"), 10, 64)

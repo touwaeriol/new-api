@@ -81,7 +81,7 @@ export function ModelsFilter(props: ModelsFilterProps) {
   const { t } = useTranslation()
   // 使用已缓存的用户数据，避免重复调用 API
   const user = useAuthStore((state) => state.auth.user)
-  const isAdmin = user?.role && user.role >= 10
+  const isAdmin = user?.role && user.role >= 100
 
   const [open, setOpen] = useState(false)
   const [filters, setFilters] = useState<DashboardFilters>(() =>

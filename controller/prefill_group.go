@@ -22,6 +22,9 @@ func GetPrefillGroups(c *gin.Context) {
 
 // CreatePrefillGroup 创建新的预填组
 func CreatePrefillGroup(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var g model.PrefillGroup
 	if err := c.ShouldBindJSON(&g); err != nil {
 		common.ApiError(c, err)
@@ -49,6 +52,9 @@ func CreatePrefillGroup(c *gin.Context) {
 
 // UpdatePrefillGroup 更新预填组
 func UpdatePrefillGroup(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var g model.PrefillGroup
 	if err := c.ShouldBindJSON(&g); err != nil {
 		common.ApiError(c, err)
@@ -76,6 +82,9 @@ func UpdatePrefillGroup(c *gin.Context) {
 
 // DeletePrefillGroup 删除预填组
 func DeletePrefillGroup(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {

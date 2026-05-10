@@ -266,6 +266,9 @@ func ensureVendorID(vendorName string, vendorByName map[string]upstreamVendor, v
 // - 默认仅创建「未配置模型」
 // - 可通过 overwrite 选择性覆盖更新本地已有模型的字段（前提：sync_official <> 0）
 func SyncUpstreamModels(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	var req syncRequest
 	// 允许空体
 	_ = c.ShouldBindJSON(&req)
@@ -497,6 +500,9 @@ func chooseStatus(primary, fallback int) int {
 
 // SyncUpstreamPreview 预览上游与本地的差异（仅用于弹窗选择）
 func SyncUpstreamPreview(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	// 1) 拉取上游数据
 	timeoutSec := common.GetEnvOrDefault("SYNC_HTTP_TIMEOUT_SECONDS", 15)
 	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Duration(timeoutSec)*time.Second)

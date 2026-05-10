@@ -41,7 +41,7 @@ interface LogStatCardsProps {
 export function LogStatCards(props: LogStatCardsProps) {
   const statCardsConfig = useModelStatCardsConfig()
   const user = useAuthStore((state) => state.auth.user)
-  const isAdmin = !!(user?.role && user.role >= 10)
+  const isAdmin = !!(user?.role && user.role >= 100)
   const [stats, setStats] = useState<{
     totalQuota: number
     totalCount: number

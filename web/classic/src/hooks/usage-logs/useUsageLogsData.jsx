@@ -23,7 +23,7 @@ import { Modal } from '@douyinfe/semi-ui';
 import {
   API,
   getTodayStartTimestamp,
-  isAdmin,
+  isRoot,
   showError,
   showSuccess,
   timestamp2string,
@@ -76,7 +76,8 @@ export const useLogsData = () => {
   const [logType, setLogType] = useState(0);
 
   // User and admin
-  const isAdminUser = isAdmin();
+  // 业主策略：仅 SUPER_ADMIN 可看其它用户全局日志，普通管理员（role=10）只看自己。
+  const isAdminUser = isRoot();
   // Role-specific storage key to prevent different roles from overwriting each other
   const STORAGE_KEY = isAdminUser
     ? 'logs-table-columns-admin'

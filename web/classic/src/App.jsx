@@ -110,9 +110,9 @@ function App() {
         <Route
           path='/console/models'
           element={
-            <AdminRoute>
+            <RootRoute>
               <ModelPage />
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route
@@ -250,11 +250,11 @@ function App() {
         <Route
           path='/console/setting'
           element={
-            <AdminRoute>
+            <RootRoute>
               <Suspense fallback={<Loading></Loading>} key={location.pathname}>
                 <Setting />
               </Suspense>
-            </AdminRoute>
+            </RootRoute>
           }
         />
         <Route

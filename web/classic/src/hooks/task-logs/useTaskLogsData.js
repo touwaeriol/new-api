@@ -23,7 +23,7 @@ import { Modal } from '@douyinfe/semi-ui';
 import {
   API,
   copy,
-  isAdmin,
+  isRoot,
   showError,
   showSuccess,
   timestamp2string,
@@ -57,8 +57,8 @@ export const useTaskLogsData = () => {
   const [logCount, setLogCount] = useState(0);
   const [pageSize, setPageSize] = useState(ITEMS_PER_PAGE);
 
-  // User and admin
-  const isAdminUser = isAdmin();
+  // 业主策略：仅 SUPER_ADMIN 可看其它用户任务日志，普通管理员（role=10）只看自己。
+  const isAdminUser = isRoot();
   // Role-specific storage key to prevent different roles from overwriting each other
   const STORAGE_KEY = isAdminUser
     ? 'task-logs-table-columns-admin'

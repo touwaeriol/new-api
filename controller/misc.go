@@ -21,6 +21,9 @@ import (
 )
 
 func TestStatus(c *gin.Context) {
+	if !requireRoot(c) {
+		return
+	}
 	err := model.PingDB()
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
